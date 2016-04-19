@@ -990,6 +990,8 @@ module.exports = present;
 })(this);
 
 },{}],12:[function(_dereq_,module,exports){
+
+
 /*
 
 style-attr
@@ -1002,25 +1004,21 @@ Very simple parsing and stringifying of style attributes.
 
 Convert a style attribute string to an object.
 
-- input: string (eg. anything you might see in a style attribute)
-- return: object
-
 */
-function parse (raw) {
-  var trim = function (s) { return s.trim(); };
+function parse(raw) {
+  var trim = function (s) {
+    return s.trim();
+  };
   var obj = {};
 
-  getKeyValueChunks(raw)
-    .map(trim)
-    .filter(Boolean)
-    .forEach(function (item) {
-      // split with `.indexOf` rather than `.split` because the value may also contain colons.
-      var pos = item.indexOf(':');
-      var key = item.substr(0, pos).trim();
-      var val = item.substr(pos + 1).trim();
+  getKeyValueChunks(raw).map(trim).filter(Boolean).forEach(function (item) {
+    // split with `.indexOf` rather than `.split` because the value may also contain colons.
+    var pos = item.indexOf(':');
+    var key = item.substr(0, pos).trim();
+    var val = item.substr(pos + 1).trim();
 
-      obj[key] = val;
-    });
+    obj[key] = val;
+  });
 
   return obj;
 }
@@ -1032,11 +1030,8 @@ function parse (raw) {
 
 Split a string into chunks matching `<key>: <value>`
 
-- input: string
-- return: Array<string>
-
 */
-function getKeyValueChunks (raw) {
+function getKeyValueChunks(raw) {
   var chunks = [];
   var offset = 0;
   var sep = ';';
@@ -1045,7 +1040,9 @@ function getKeyValueChunks (raw) {
   var nextSplit;
   while (offset < raw.length) {
     nextSplit = raw.indexOf(sep, offset);
-    if (nextSplit === -1) { nextSplit = raw.length; }
+    if (nextSplit === -1) {
+      nextSplit = raw.length;
+    }
 
     chunk += raw.substring(offset, nextSplit);
 
@@ -1071,16 +1068,11 @@ function getKeyValueChunks (raw) {
 
 Convert an object into an attribute string
 
-- input: object
-- return: string
-
 */
-function stringify (obj) {
-  return Object.keys(obj)
-    .map(function (key) {
-      return key + ':' + obj[key];
-    })
-    .join(';');
+function stringify(obj) {
+  return Object.keys(obj).map(function (key) {
+    return key + ':' + obj[key];
+  }).join(';');
 }
 
 /*
@@ -1090,18 +1082,14 @@ function stringify (obj) {
 
 Normalize an attribute string (eg. collapse duplicates)
 
-- input: string
-- return: string
-
 */
-function normalize (str) {
+function normalize(str) {
   return stringify(parse(str));
 }
 
 module.exports.parse = parse;
 module.exports.stringify = stringify;
 module.exports.normalize = normalize;
-
 },{}],13:[function(_dereq_,module,exports){
 /**
  * @author dmarcos / https://github.com/dmarcos
@@ -54069,6 +54057,8 @@ module.exports.Component = register('canvas', {
       canvas.classList.add('a-canvas');
       canvas.style.height = data.height + '%';
       canvas.style.width = data.width + '%';
+      // Mark canvas as provided/injected by A-Frame.
+      canvas.dataset.aframeDefault = true;
       scene.appendChild(canvas);
     }
 
@@ -57473,8 +57463,8 @@ var AScene = module.exports = registerElement('a-scene', {
         // Possible camera or canvas not injected yet.
         if (!camera || !canvas) { return; }
 
-        // Update canvas.
-        if (!isMobile) {
+        // Update canvas if canvas was provided by A-Frame.
+        if (!isMobile && canvas.dataset.aframeDefault) {
           canvas.style.width = '100%';
           canvas.style.height = '100%';
         }

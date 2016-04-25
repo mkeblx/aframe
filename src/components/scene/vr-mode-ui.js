@@ -80,7 +80,7 @@ module.exports.Component = registerComponent('vr-mode-ui', {
   toggleEnterVRButtonIfNeeded: function () {
     if (!this.enterVREl) { return; }
     var scene = this.el;
-    if (scene.is('vr-mode')) {
+    if (scene.is('vr-mode') && !/SamsungBrowser.+Mobile VR/i.test(navigator.userAgent)) {
       this.enterVREl.classList.add(HIDDEN_CLASS);
     } else {
       this.enterVREl.classList.remove(HIDDEN_CLASS);
